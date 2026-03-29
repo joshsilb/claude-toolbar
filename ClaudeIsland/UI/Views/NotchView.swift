@@ -35,16 +35,17 @@ struct NotchView: View {
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 12)
+        .frame(
+            width: viewModel.openedSize.width,
+            height: viewModel.openedSize.height,
+            alignment: .top
+        )
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(.black)
         )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.7), radius: 6)
-        .frame(
-            maxWidth: viewModel.openedSize.width,
-            maxHeight: viewModel.openedSize.height,
-            alignment: .top
-        )
         .animation(openAnimation, value: viewModel.openedSize)
         .preferredColorScheme(.dark)
         .onAppear {

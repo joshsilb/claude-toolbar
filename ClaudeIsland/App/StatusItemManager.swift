@@ -13,6 +13,7 @@ import SwiftUI
 class StatusItemManager: ObservableObject {
     private let statusItem: NSStatusItem
     private var hostingView: NSHostingView<StatusItemContentView>?
+    private var clickMonitor: Any?
     private var cancellables = Set<AnyCancellable>()
 
     @Published var isProcessing: Bool = false
@@ -39,9 +40,18 @@ class StatusItemManager: ObservableObject {
 
     private func setupButton() {
         guard let button = statusItem.button else { return }
-        button.action = #selector(statusItemClicked)
-        button.target = self
-        button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        button.action = nil
+        button.sendAction(on: [])
+
+        clickMonitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
+            guard let self, let buttonWindow = self.statusItem.button?.window else { return event }
+            let pointInButton = buttonWindow.convertPoint(fromScreen: event.locationInWindow)
+            if buttonWindow.frame.contains(NSEvent.mouseLocation) {
+                self.onTogglePanel?()
+                return nil
+            }
+            return event
+        }
     }
 
     private func setupHostingView() {
@@ -60,10 +70,6 @@ class StatusItemManager: ObservableObject {
         ])
 
         hostingView = hosting
-    }
-
-    @objc private func statusItemClicked() {
-        onTogglePanel?()
     }
 
     func triggerBounce() {

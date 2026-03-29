@@ -95,9 +95,10 @@ class NotchViewModel: ObservableObject {
     }
 
     func updateStatusItemRect(_ rect: CGRect) {
+        let screen = NSScreen.screens.first { $0.frame.contains(rect.origin) }
         geometry = NotchGeometry(
             statusItemRect: rect,
-            screenRect: geometry.screenRect
+            screenRect: screen?.frame ?? geometry.screenRect
         )
     }
 
