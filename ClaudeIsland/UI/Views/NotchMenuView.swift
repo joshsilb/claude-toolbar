@@ -16,7 +16,6 @@ import Sparkle
 struct NotchMenuView: View {
     @ObservedObject var viewModel: NotchViewModel
     @ObservedObject private var updateManager = UpdateManager.shared
-    @ObservedObject private var screenSelector = ScreenSelector.shared
     @ObservedObject private var soundSelector = SoundSelector.shared
     @State private var hooksInstalled: Bool = false
     @State private var launchAtLogin: Bool = false
@@ -36,7 +35,6 @@ struct NotchMenuView: View {
                 .padding(.vertical, 4)
 
             // Appearance settings
-            ScreenPickerRow(screenSelector: screenSelector)
             SoundPickerRow(soundSelector: soundSelector)
 
             Divider()
@@ -89,7 +87,7 @@ struct NotchMenuView: View {
                 icon: "star",
                 label: "Star on GitHub"
             ) {
-                if let url = URL(string: "https://github.com/farouqaldori/claude-island") {
+                if let url = URL(string: "https://github.com/joshsilb/claude-toolbar") {
                     NSWorkspace.shared.open(url)
                 }
             }
@@ -122,7 +120,6 @@ struct NotchMenuView: View {
     private func refreshStates() {
         hooksInstalled = HookInstaller.isInstalled()
         launchAtLogin = SMAppService.mainApp.status == .enabled
-        screenSelector.refreshScreens()
     }
 }
 
